@@ -34,6 +34,7 @@ int main(int argc, char **argv)
         std::cout << "  k           = number of desired centers" << std::endl;
         std::cout << "  d           = dimension of an input point" << std::endl;
         std::cout << "  space       = coreset size" << std::endl;
+        std::cout << "  output      = path to the output file" << std::endl;
         std::cout << "  projections = number of random projections used for nearest neighbour search" << std::endl;
         std::cout << "                in first level" << std::endl;
         std::cout << "  splitchar   = input CSV split character" << std::endl;
