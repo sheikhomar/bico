@@ -1,0 +1,4 @@
+<map id="CluE::PointWeightModifier" name="CluE::PointWeightModifier">
+<area shape="rect" id="node2" href="$class_clu_e_1_1_weight_modifier.html" title="{CluE::WeightModifier\l\&lt; Point \&gt;\n||+ ~WeightModifier()\l+ clone()\l+ getWeight()\l+ setWeight()\l}" alt="" coords="20,192,164,328"/>
+<area shape="rect" id="node3" href="$class_clu_e_1_1_weight_modifier.html" title="Abstract base class to modify the weight of weighted objects. " alt="" coords="5,6,179,127"/>
+</map>

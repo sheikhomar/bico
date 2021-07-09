@@ -1,0 +1,9 @@
+\form#0:\[ \sum{ \{d(p, \mathrm{proxy}(x)) \: | \: p \in \mathtt{points} \}} \]
+\form#1:$ \mathrm{proxy}(x) $
+\form#2:$ \mathtt{pS}_\mathtt{sI} $
+\form#3:\[ \sum{ \{d(p, \mathrm{proxy}(x)) \: | \: p \in \mathtt{points}, \mathrm{proxy}(x)=\mathtt{proxies}_\mathtt{index} \} } \]
+\form#4:\[ \sum{ \{d(p, \mathrm{proxy}(x)) \: | \: p \in \mathtt{points}, \mathrm{proxy}(x)=\mathtt{pS}_{\mathtt{sI}_\mathtt{pI}} \} } \]
+\form#5:\[ \sum{ \{ d(p_{i,j}, \mathtt{proxies}_i) \: | \: p_{i,j} \in \mathtt{clusters}_i \} } \]
+\form#6:\[ \sum{ \{ d(p_{i,j}, \mathtt{pS}_{\mathtt{sI}_i}) \: | \: p_{i,j} \in \mathtt{cS}_{\mathtt{sI}_i} \} } \]
+\form#7:\[ \sum{ \{ d(p, \mathtt{proxy}) \: | \: p \in \mathtt{cluster} \} } \]
+\form#8:\[ \sum{ \{ d(p, \mathtt{pS}_{\mathtt{sI}_\mathtt{pI}}) \: | \: p \in \mathtt{cS}_{\mathtt{sI}_\mathtt{pI}} \} } \]

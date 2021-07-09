@@ -1,0 +1,6 @@
+<map id="CluE::Evaluation" name="CluE::Evaluation">
+<area shape="rect" id="node2" href="$class_clu_e_1_1_combined_evaluation.html" title="Abstract class. Proxy based evaluation algorithms may be optimized by deriving from this class..." alt="" coords="5,131,211,325"/>
+<area shape="rect" id="node4" href="$class_clu_e_1_1_partition_evaluation.html" title="Abstract class for partition&#45;based evaluation algorithms. " alt="" coords="235,160,431,296"/>
+<area shape="rect" id="node5" href="$class_clu_e_1_1_proxy_evaluation.html" title="Abstract class for proxy&#45;based evaluation algorithms. " alt="" coords="455,131,637,325"/>
+<area shape="rect" id="node3" href="$class_clu_e_1_1_k_means_evaluator.html" title="Calculates the k&#45;means weight. " alt="" coords="231,374,421,642"/>
+</map>

@@ -1,0 +1,15 @@
+<map id="src/base/solutionprovider.h" name="src/base/solutionprovider.h">
+<area shape="rect" id="node2" href="$algorithm_8h.html" title="src/base/algorithm.h" alt="" coords="37,80,176,107"/>
+<area shape="rect" id="node6" href="$partitionprovider_8h.html" title="src/base/partitionprovider.h" alt="" coords="267,80,444,107"/>
+<area shape="rect" id="node10" href="$proxyprovider_8h.html" title="src/base/proxyprovider.h" alt="" coords="549,80,712,107"/>
+<area shape="rect" id="node13" href="$discreteproxyprovider_8h.html" title="src/base/discreteproxyprovider.h" alt="" coords="737,80,945,107"/>
+<area shape="rect" id="node4" href="$bico_8h.html" title="src/clustering/bico.h" alt="" coords="676,304,815,331"/>
+<area shape="rect" id="node12" href="$proxysolution_8h.html" title="src/datastructure/proxysolution.h" alt="" coords="1109,229,1320,256"/>
+<area shape="rect" id="node14" href="$discreteproxysolution_8h.html" title="src/datastructure/discreteproxysolution.h" alt="" coords="868,155,1127,181"/>
+<area shape="rect" id="node3" href="$streamingalgorithm_8h.html" title="src/base/streamingalgorithm.h" alt="" coords="5,229,203,256"/>
+<area shape="rect" id="node5" href="$main_8cpp.html" title="main.cpp" alt="" coords="881,379,956,405"/>
+<area shape="rect" id="node7" href="$combinedevaluation_8h.html" title="src/base/combinedevaluation.h" alt="" coords="393,155,593,181"/>
+<area shape="rect" id="node9" href="$partitionevaluation_8h.html" title="src/base/partitionevaluation.h" alt="" coords="77,155,267,181"/>
+<area shape="rect" id="node8" href="$kmeansevaluator_8h.html" title="src/evaluation/kmeansevaluator.h" alt="" coords="517,229,731,256"/>
+<area shape="rect" id="node11" href="$proxyevaluation_8h.html" title="src/base/proxyevaluation.h" alt="" coords="668,155,844,181"/>
+</map>

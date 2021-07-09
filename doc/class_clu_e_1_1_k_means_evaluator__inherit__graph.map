@@ -1,0 +1,6 @@
+<map id="CluE::KMeansEvaluator&lt; T &gt;" name="CluE::KMeansEvaluator&lt; T &gt;">
+<area shape="rect" id="node2" href="$class_clu_e_1_1_proxy_evaluation.html" title="Abstract class for proxy&#45;based evaluation algorithms. " alt="" coords="5,131,187,325"/>
+<area shape="rect" id="node3" href="$class_clu_e_1_1_evaluation.html" title="Abstract base class for clustering evaluations. " alt="" coords="147,5,264,83"/>
+<area shape="rect" id="node4" href="$class_clu_e_1_1_combined_evaluation.html" title="Abstract class. Proxy based evaluation algorithms may be optimized by deriving from this class..." alt="" coords="211,131,417,325"/>
+<area shape="rect" id="node5" href="$class_clu_e_1_1_measure_setter.html" title="Interface to propagate the ability to set a DissimilarityMeasure. " alt="" coords="442,189,616,267"/>
+</map>

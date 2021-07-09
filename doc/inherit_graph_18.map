@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$class_clu_e_1_1_discrete_proxy_provider.html" title="Abstract base class to access the results of proxy / center based clustering algorithms. " alt="" coords="6,5,223,32"/>
+<area shape="rect" id="node2" href="$struct_clu_e_1_1_discrete_proxy_solution.html" title="Data structure for discrete proxies. " alt="" coords="272,31,491,57"/>
+<area shape="rect" id="node3" href="$class_clu_e_1_1_proxy_provider.html" title="Abstract base class to access results of proxy / center based clustering algorithms. " alt="" coords="30,107,199,133"/>
+<area shape="rect" id="node4" href="$struct_clu_e_1_1_proxy_solution.html" title="Data structure for proxies. " alt="" coords="296,93,467,120"/>
+<area shape="rect" id="node5" href="$class_clu_e_1_1_solution_provider.html" title="Abstract base class for algorithm solutions. " alt="" coords="39,56,190,83"/>
+</map>
