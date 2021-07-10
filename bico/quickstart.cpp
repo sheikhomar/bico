@@ -4,6 +4,7 @@
 #include <random>
 #include <ctime>
 #include <time.h>
+#include <chrono>
 
 #include <boost/algorithm/string.hpp>
 
@@ -19,7 +20,114 @@
 #include "src/point/pointweightmodifier.h"
 #include "src/point/realspaceprovider.h"
 
+using namespace CluE;
+using namespace std::chrono;
+
+void outputResultsToFile(Bico<Point> &bico, std::string outputFilePath)
+{
+    printf("Write results to %s...\n", outputFilePath.c_str());
+
+    // Retrieve coreset
+    ProxySolution<Point> *sol = bico.compute();
+
+    std::ofstream outData(outputFilePath, std::ifstream::out);
+
+    // Output coreset size
+    outData << sol->proxysets[0].size() << "\n";
+
+    // Output coreset points
+    for (size_t i = 0; i < sol->proxysets[0].size(); ++i)
+    {
+        // Output weight
+        outData << sol->proxysets[0][i].getWeight() << " ";
+        // Output center of gravity
+        for (size_t j = 0; j < sol->proxysets[0][i].dimension(); ++j)
+        {
+            outData << sol->proxysets[0][i][j];
+            if (j < sol->proxysets[0][i].dimension() - 1)
+                outData << " ";
+        }
+        outData << "\n";
+    }
+    outData.close();
+}
+
+void runOnCensus1990()
+{
+    size_t d = 68;
+    size_t n = 2458285;
+    size_t k = 200;
+    size_t p = 50;
+    size_t T = 200 * k;
+    std::string inputFilePath = "data/raw/USCensus1990.data.txt";
+
+    printf("Initiasing BICO with d=%ld, n=%ld, k=%ld, p=%ld, T=%ld\n", d, n, k, p, T);
+    Bico<Point> bico(d, n, k, p, T, new SquaredL2Metric(), new PointWeightModifier());
+
+    printf("Opening input file %s...\n", inputFilePath.c_str());
+    std::ifstream inData(inputFilePath, std::ifstream::in);
+
+    std::string line;
+
+    // Skip the first line because it is the header.
+    std::getline(inData, line);
+
+    size_t pointCount = 0;
+
+    auto startTime = high_resolution_clock::now();
+
+    while (inData.good())
+    {
+        // Read line and construct point
+        std::getline(inData, line);
+        std::vector<std::string> stringcoords;
+        boost::split(stringcoords, line, boost::is_any_of(","));
+
+        std::vector<double> coords;
+        coords.reserve(stringcoords.size());
+
+        // Skip the first attribute which is `caseid`
+        for (size_t i = 1; i < stringcoords.size(); ++i)
+            coords.push_back(atof(stringcoords[i].c_str()));
+
+        CluE::Point p(coords);
+
+        // p.debug(pointCount, "%3.0f", 20);
+
+        if (p.dimension() != d)
+        {
+            std::clog << "Line skipped because line dimension is " << p.dimension() << " instead of " << d << std::endl;
+            continue;
+        }
+
+        pointCount++;
+
+        if (pointCount % 10000 == 0)
+        {
+            auto stopTime = high_resolution_clock::now();
+            auto duration = duration_cast<milliseconds>(stopTime - startTime).count();
+            std::cout << "Read " << pointCount << " points. Run time: " << duration << "ms" << std::endl;
+        }
+
+        // Call BICO point update
+        bico << p;
+    }
+
+    auto stopTime = high_resolution_clock::now();
+    auto duration = duration_cast<seconds>(stopTime - startTime).count();
+    std::cout << "Processed " << pointCount << " points. Run time: " << duration << "s" << std::endl;
+
+    outputResultsToFile(bico, "data/results/USCensus1990.data.txt");
+}
+
 int main(int argc, char **argv)
+{
+    using namespace CluE;
+
+    runOnCensus1990();
+}
+
+int main_old(int argc, char **argv)
 {
     using namespace CluE;
 
@@ -56,9 +164,9 @@ int main(int argc, char **argv)
     int p = atoi(argv[7]);
     std::string splitchar(",");
     if (argc >= 9)
-      splitchar = std::string(argv[8], 1);
+        splitchar = std::string(argv[8], 1);
     if (argc >= 10)
-      Randomness::initialize(atoi(argv[9]));
+        Randomness::initialize(atoi(argv[9]));
 
     time(&starttime);
 
@@ -91,7 +199,7 @@ int main(int argc, char **argv)
     }
 
     // Retrieve coreset
-    ProxySolution<Point>* sol = bico.compute();
+    ProxySolution<Point> *sol = bico.compute();
 
     // Output coreset size
     outputstream << sol->proxysets[0].size() << "\n";
