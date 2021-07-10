@@ -17,6 +17,14 @@ make -C bico/build
     ```bash
     mkdir -p data/raw
     mkdir -p data/results
-    curl https://archive.ics.uci.edu/ml/machine-learning-databases/census1990-mld/USCensus1990.data.txt \\
+    curl https://archive.ics.uci.edu/ml/machine-learning-databases/census1990-mld/USCensus1990.data.txt \
         --output data/raw/USCensus1990.data.txt
+    ```
+
+- Covertype
+
+    ```bash
+    curl https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/covtype.data.gz \
+        --output data/raw/covtype.data.gz
+    gunzip data/raw/covtype.data.gz
     ```
