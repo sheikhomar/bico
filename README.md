@@ -15,6 +15,8 @@ make -C bico/build
 - US Census Data (1990)
 
     ```bash
-    mkdir data
-    curl https://archive.ics.uci.edu/ml/machine-learning-databases/census1990-mld/USCensus1990.data.txt --output data/USCensus1990.data.txt
+    mkdir -p data/raw
+    mkdir -p data/results
+    curl https://archive.ics.uci.edu/ml/machine-learning-databases/census1990-mld/USCensus1990.data.txt \\
+        --output data/raw/USCensus1990.data.txt
     ```
