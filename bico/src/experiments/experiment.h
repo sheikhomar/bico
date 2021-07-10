@@ -157,5 +157,32 @@ public:
     }
 };
 
+class CovertypeExperiment : public Experiment
+{
+public:
+    CovertypeExperiment() : Experiment(
+        55UL,       // Number of dimensions, 54 variables and 1 label
+        581012UL,   // Number of points in the dataset.
+        200UL,      // Number of clusters.
+        50UL,       // Number of random projections
+        40000UL,    // Number of target points in the coreset.
+        "data/raw/covtype.data",
+        false,      // Whether the data contains a header.
+        "data/results/covtype.txt"
+    )
+    {
+    }
+
+    void parseLine(std::vector<double> &result, const std::string &line)
+    {
+        std::vector<std::string> stringcoords;
+        boost::split(stringcoords, line, boost::is_any_of(","));
+
+        result.reserve(stringcoords.size());
+
+        for (size_t i = 0; i < stringcoords.size(); ++i)
+            result.push_back(atof(stringcoords[i].c_str()));
+    }
+};
 
 #endif
