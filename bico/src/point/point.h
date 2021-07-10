@@ -134,6 +134,20 @@ public:
 	 * @throw InvalidRuntimeConfigurationException [1] Point has coordinate <= 0.
 	 */
 	double kullbackleibler(Point const&) const;
+
+	void debug(size_t index, std::string valFormat="%7.3f", size_t elementsBeforeNewLine=10) const
+	{
+        printf("  p_%ld = [", index);
+        for (size_t i = 0; i < dimension(); i++)
+        {
+            if (i % elementsBeforeNewLine == 0)
+                printf("\n     ");
+            printf(valFormat.c_str(), this->coordinates[i]);
+			printf(" ");
+
+        }
+        printf("\n  ], dimensions = %ld\n", dimension());
+	}
 	
 private:
 	std::vector<double> coordinates;
