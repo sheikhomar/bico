@@ -27,3 +27,10 @@ make -C bico/build
     curl https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/covtype.data.gz \
         --output data/raw/covtype.data.gz
     ```
+
+- Bag of Words Datasets
+
+    ```bash
+    curl https://archive.ics.uci.edu/ml/machine-learning-databases/bag-of-words/docword.enron.txt.gz \
+        --output data/raw/docword.enron.txt.gz
+    ```

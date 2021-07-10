@@ -123,6 +123,7 @@ public:
             // Call BICO point update
             bico << p;
 
+            // p.debugNonZero(pointCount, "%2.0f", 15);
             // p.debug(pointCount, "%5.0f", 15);
             // if (pointCount > 5) {
             //     break;
@@ -203,6 +204,99 @@ public:
 
         for (size_t i = 0; i < stringcoords.size(); ++i)
             result.push_back(atof(stringcoords[i].c_str()));
+    }
+};
+
+class EnronExperiment : public Experiment
+{
+    std::string previousLine;
+    size_t previousDocId;
+    bool firstPoint;
+
+public:
+    EnronExperiment()
+    {
+        this->ClusterSize = 200UL;
+        this->LowDimSize = 50UL;
+        this->TargetCoresetSize = 40000UL;
+        this->InputFilePath = "data/raw/docword.enron.txt.gz";
+        this->OutputFilePath = "data/results/docword.enron.txt";
+    }
+
+    void prepareFileStream(std::istream &inData)
+    {
+        // The format of the docword.*.txt file is 3 header lines, followed by triples:
+        // ---
+        // D    -> the number of documents
+        // W    -> the number of words in the vocabulary
+        // NNZ  -> the number of nonzero counts in the bag-of-words
+        // docID wordID count
+        // docID wordID count
+        // ...
+        // docID wordID count
+        // docID wordID count
+        // ---
+        
+        std::string line;
+        std::getline(inData, line); // Read line with D
+        this->DataSize = std::stoul(line.c_str());
+
+        printf("Read D = %ld\n", this->DataSize);
+
+        std::getline(inData, line); // Read line with W
+        this->DimSize = std::stoul(line.c_str());
+
+        printf("Read W = %ld\n", this->DimSize);
+
+        std::getline(inData, line); // Skip line with NNZ
+        printf("Read NNZ = %s\n", line.c_str());
+
+        previousDocId = 0;
+        firstPoint = true;
+    }
+
+    void parsePoint(std::vector<double> &result, std::istream &inData)
+    {
+        // Allocate memory and initialise all elements to zero.
+        result.resize(this->DimSize, 0.0);
+
+        std::string line;
+        if (previousLine.empty()) {
+            std::getline(inData, line);
+        } else {
+            line = previousLine;
+        }
+
+        do
+        {
+            std::vector<std::string> splits;
+            boost::split(splits, line, boost::is_any_of(" "));
+
+            auto docId = std::stoul(splits[0]);
+            auto wordId = std::stoul(splits[1]);
+            auto count = static_cast<double>(std::stoul(splits[2]));
+
+            if (firstPoint)
+            {
+                firstPoint = false;
+                previousLine = line;
+                previousDocId = docId;
+            }
+
+            if (previousDocId != docId)
+            {
+                // Current line belongs to the next point. Store it for later.
+                previousLine = line;
+                previousDocId = docId;
+                break;
+            }
+
+            result[wordId] = count;
+
+            // Read next line
+            std::getline(inData, line);
+
+        } while (inData.good());
     }
 };
 
