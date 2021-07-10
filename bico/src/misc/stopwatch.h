@@ -1,3 +1,6 @@
+#ifndef STOPWATCH_H
+#define STOPWATCH_H
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -94,3 +97,5 @@ public:
         return output.str();
     }
 };
+
+#endif
