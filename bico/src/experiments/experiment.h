@@ -70,14 +70,14 @@ public:
         outData.close();
     }
 
-    virtual void parseLine(std::vector<double> &result, const std::string &line)
+    virtual void parsePoint(std::vector<double> &result, std::istream &inData)
     {
-        throw "ParseLine not implemented!";
+        throw std::logic_error("parsePoint not yet implemented");
     }
 
-    virtual void prepareFileStream(std::istream inData)
+    virtual void prepareFileStream(std::istream &inData)
     {
-        throw "prepareFileStream not implemented!";
+        throw std::logic_error("prepareFileStream not yet implemented");
     }
 
     void run()
@@ -94,6 +94,8 @@ public:
         filteredInputStream.push(fileStream);
         std::istream inData(&filteredInputStream);
 
+        prepareFileStream(inData);
+
         std::string line;
         size_t pointCount = 0;
         StopWatch sw(true);
@@ -101,10 +103,8 @@ public:
 
         while (inData.good())
         {
-            // Read line and construct point
-            std::getline(inData, line);
             std::vector<double> coords;
-            parseLine(coords, line);
+            parsePoint(coords, inData);
             CluE::Point p(coords);
 
             if (p.dimension() != DimSize)
@@ -149,14 +149,18 @@ public:
         this->OutputFilePath = "data/results/USCensus1990.data.txt";
     }
 
-    void prepareFileStream(std::istream inData)
+    void prepareFileStream(std::istream &inData)
     {
         std::string line;
         std::getline(inData, line); // Ignore the header line.
+        printf("Preparing Covertype. Skip first line: %s\n", line.c_str());
     }
 
-    void parseLine(std::vector<double> &result, const std::string &line)
+    void parsePoint(std::vector<double> &result, std::istream &inData)
     {
+        std::string line;
+        std::getline(inData, line);
+
         std::vector<std::string> stringcoords;
         boost::split(stringcoords, line, boost::is_any_of(","));
 
@@ -182,14 +186,16 @@ public:
         this->OutputFilePath = "data/results/covtype.txt";
     }
 
-    void prepareFileStream(std::istream inData)
+    void prepareFileStream(std::istream &inData)
     {
-        std::string line;
-        std::getline(inData, line); // Ignore the header line.
+        printf("Preparing Covertype.\n");
     }
 
-    void parseLine(std::vector<double> &result, const std::string &line)
+    void parsePoint(std::vector<double> &result, std::istream &inData)
     {
+        std::string line;
+        std::getline(inData, line);
+
         std::vector<std::string> stringcoords;
         boost::split(stringcoords, line, boost::is_any_of(","));
 
