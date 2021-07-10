@@ -154,7 +154,7 @@ public:
     {
         std::string line;
         std::getline(inData, line); // Ignore the header line.
-        printf("Preparing Covertype. Skip first line: %s\n", line.c_str());
+        printf("Preparing Census Dataset. Skip first line: %s\n", line.c_str());
     }
 
     void parsePoint(std::vector<double> &result, std::istream &inData)
