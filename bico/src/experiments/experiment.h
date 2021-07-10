@@ -11,6 +11,11 @@
 #include <iomanip>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/iostreams/filtering_streambuf.hpp>
+#include <boost/iostreams/copy.hpp>
+#include <boost/iostreams/filter/gzip.hpp>
+#include <boost/iostreams/filter/bzip2.hpp>
 
 #include "../point/l2metric.h"
 #include "../point/squaredl2metric.h"
@@ -82,7 +87,16 @@ public:
     void run()
     {
         printf("Opening input file %s...\n", InputFilePath.c_str());
-        std::ifstream inData(InputFilePath, std::ifstream::in);
+
+        namespace io = boost::iostreams;
+        std::ifstream fileStream(InputFilePath, std::ios_base::in | std::ios_base::binary);
+        io::filtering_streambuf<io::input> filteredInputStream;
+        if (boost::ends_with(InputFilePath, ".gz"))
+        {
+            filteredInputStream.push(io::gzip_decompressor());
+        }
+        filteredInputStream.push(fileStream);
+        std::istream inData(&filteredInputStream);
 
         std::string line;
 
@@ -92,7 +106,7 @@ public:
             std::getline(inData, line);
         }
 
-            size_t pointCount = 0;
+        size_t pointCount = 0;
 
         StopWatch sw(true);
 
@@ -132,15 +146,14 @@ class CensusExperiment : public Experiment
 {
 public:
     CensusExperiment() : Experiment(
-        68UL,       // Number of dimensions
-        2458285UL,  // Number of points in the dataset.
-        200UL,      // Number of clusters.
-        50UL,       // Number of random projections
-        40000UL,    // Number of target points in the coreset.
-        "data/raw/USCensus1990.data.txt",
-        true,       // Whether the data contains a header.
-        "data/results/USCensus1990.data.txt"
-    )
+                             68UL,      // Number of dimensions
+                             2458285UL, // Number of points in the dataset.
+                             200UL,     // Number of clusters.
+                             50UL,      // Number of random projections
+                             40000UL,   // Number of target points in the coreset.
+                             "data/raw/USCensus1990.data.txt",
+                             true, // Whether the data contains a header.
+                             "data/results/USCensus1990.data.txt")
     {
     }
 
@@ -161,15 +174,14 @@ class CovertypeExperiment : public Experiment
 {
 public:
     CovertypeExperiment() : Experiment(
-        55UL,       // Number of dimensions, 54 variables and 1 label
-        581012UL,   // Number of points in the dataset.
-        200UL,      // Number of clusters.
-        50UL,       // Number of random projections
-        40000UL,    // Number of target points in the coreset.
-        "data/raw/covtype.data",
-        false,      // Whether the data contains a header.
-        "data/results/covtype.txt"
-    )
+                                55UL,     // Number of dimensions, 54 variables and 1 label
+                                581012UL, // Number of points in the dataset.
+                                200UL,    // Number of clusters.
+                                50UL,     // Number of random projections
+                                40000UL,  // Number of target points in the coreset.
+                                "data/raw/covtype.data.gz",
+                                false, // Whether the data contains a header.
+                                "data/results/covtype.txt")
     {
     }
 

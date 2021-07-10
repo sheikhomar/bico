@@ -29,7 +29,7 @@ ifeq ($(config),release)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -O3 -std=c++0x
   CXXFLAGS  += $(CFLAGS) 
   LDFLAGS   += -s -L../bin
-  LIBS      += -lCluE
+  LIBS      += -lCluE -lboost_iostreams
   RESFLAGS  += $(DEFINES) $(INCLUDES) 
   LDDEPS    += ../bin/libCluE.a
   LINKCMD    = $(CXX) -o $(TARGET) $(OBJECTS) $(LDFLAGS) $(RESOURCES) $(ARCH) $(LIBS)

@@ -26,5 +26,4 @@ make -C bico/build
     ```bash
     curl https://archive.ics.uci.edu/ml/machine-learning-databases/covtype/covtype.data.gz \
         --output data/raw/covtype.data.gz
-    gunzip data/raw/covtype.data.gz
     ```
