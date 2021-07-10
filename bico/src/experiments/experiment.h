@@ -35,27 +35,18 @@ using namespace CluE;
 class Experiment
 {
 protected:
-    const size_t D;
-    const size_t N;
-    const size_t K;
-    const size_t P;
-    const size_t T;
-    const std::string InputFilePath;
-    const bool HasHeader;
-    const std::string OutputFilePath;
-    Bico<Point> bico;
+    size_t DimSize;
+    size_t DataSize;
+    size_t ClusterSize;
+    size_t LowDimSize;
+    size_t TargetCoresetSize;
+    std::string InputFilePath;
+    std::string OutputFilePath;
 
 public:
-    Experiment(size_t d, size_t n, size_t k, size_t p, size_t t, std::string inputFilePath, bool hasHeader, std::string outputFilePath) : D(d), N(n), K(k), P(p), T(t), InputFilePath(inputFilePath), HasHeader(hasHeader), OutputFilePath(outputFilePath), bico(d, n, k, p, t, new SquaredL2Metric(), new PointWeightModifier())
-    {
-    }
-
-    void outputResultsToFile()
+    void outputResultsToFile(ProxySolution<Point> *sol)
     {
         printf("Write results to %s...\n", OutputFilePath.c_str());
-
-        // Retrieve coreset
-        ProxySolution<Point> *sol = bico.compute();
 
         std::ofstream outData(OutputFilePath, std::ifstream::out);
 
@@ -84,6 +75,11 @@ public:
         throw "ParseLine not implemented!";
     }
 
+    virtual void prepareFileStream(std::istream inData)
+    {
+        throw "prepareFileStream not implemented!";
+    }
+
     void run()
     {
         printf("Opening input file %s...\n", InputFilePath.c_str());
@@ -99,16 +95,9 @@ public:
         std::istream inData(&filteredInputStream);
 
         std::string line;
-
-        if (HasHeader)
-        {
-            // Skip the first line because it is the header.
-            std::getline(inData, line);
-        }
-
         size_t pointCount = 0;
-
         StopWatch sw(true);
+        Bico<Point> bico(DimSize, DataSize, ClusterSize, LowDimSize, TargetCoresetSize, new SquaredL2Metric(), new PointWeightModifier());
 
         while (inData.good())
         {
@@ -118,9 +107,9 @@ public:
             parseLine(coords, line);
             CluE::Point p(coords);
 
-            if (p.dimension() != D)
+            if (p.dimension() != DimSize)
             {
-                std::clog << "Line skipped because line dimension is " << p.dimension() << " instead of " << D << std::endl;
+                std::clog << "Line skipped because line dimension is " << p.dimension() << " instead of " << DimSize << std::endl;
                 continue;
             }
 
@@ -142,23 +131,28 @@ public:
 
         std::cout << "Processed " << pointCount << " points. Run time: " << sw.elapsedStr() << "s" << std::endl;
 
-        outputResultsToFile();
+        outputResultsToFile(bico.compute());
     }
 };
 
 class CensusExperiment : public Experiment
 {
 public:
-    CensusExperiment() : Experiment(
-                             68UL,      // Number of dimensions
-                             2458285UL, // Number of points in the dataset.
-                             200UL,     // Number of clusters.
-                             50UL,      // Number of random projections
-                             40000UL,   // Number of target points in the coreset.
-                             "data/raw/USCensus1990.data.txt",
-                             true, // Whether the data contains a header.
-                             "data/results/USCensus1990.data.txt")
+    CensusExperiment()
     {
+        this->DimSize = 68UL;
+        this->DataSize = 2458285UL;
+        this->ClusterSize = 200UL;
+        this->LowDimSize = 50UL;
+        this->TargetCoresetSize = 40000UL;
+        this->InputFilePath = "data/raw/USCensus1990.data.txt";
+        this->OutputFilePath = "data/results/USCensus1990.data.txt";
+    }
+
+    void prepareFileStream(std::istream inData)
+    {
+        std::string line;
+        std::getline(inData, line); // Ignore the header line.
     }
 
     void parseLine(std::vector<double> &result, const std::string &line)
@@ -177,16 +171,21 @@ public:
 class CovertypeExperiment : public Experiment
 {
 public:
-    CovertypeExperiment() : Experiment(
-                                55UL,     // Number of dimensions, 54 variables and 1 label
-                                581012UL, // Number of points in the dataset.
-                                200UL,    // Number of clusters.
-                                50UL,     // Number of random projections
-                                40000UL,  // Number of target points in the coreset.
-                                "data/raw/covtype.data.gz",
-                                false, // Whether the data contains a header.
-                                "data/results/covtype.txt")
+    CovertypeExperiment()
     {
+        this->DimSize = 55UL;
+        this->DataSize = 581012UL;
+        this->ClusterSize = 200UL;
+        this->LowDimSize = 50UL;
+        this->TargetCoresetSize = 40000UL;
+        this->InputFilePath = "data/raw/covtype.data.gz";
+        this->OutputFilePath = "data/results/covtype.txt";
+    }
+
+    void prepareFileStream(std::istream inData)
+    {
+        std::string line;
+        std::getline(inData, line); // Ignore the header line.
     }
 
     void parseLine(std::vector<double> &result, const std::string &line)

@@ -28,8 +28,8 @@ using namespace std::chrono;
 
 int main(int argc, char **argv)
 {
-    CensusExperiment census;
-    census.run();
+    CovertypeExperiment experiment;
+    experiment.run();
 }
 
 int main_old(int argc, char **argv)
