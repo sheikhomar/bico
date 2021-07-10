@@ -46,7 +46,7 @@ public:
     std::string elapsedStr()
     {
         typedef std::chrono::duration<int, std::ratio<86400>> days;
-        
+
         auto stop = high_resolution_clock::now();
         auto durationMs = duration_cast<milliseconds>(stop - startTime);
 
@@ -112,105 +112,140 @@ public:
     }
 };
 
-void outputResultsToFile(Bico<Point> &bico, std::string outputFilePath)
+class Experiment
 {
-    printf("Write results to %s...\n", outputFilePath.c_str());
+protected:
+    const size_t D;
+    const size_t N;
+    const size_t K;
+    const size_t P;
+    const size_t T;
+    const std::string InputFilePath;
+    const bool HasHeader;
+    const std::string OutputFilePath;
+    Bico<Point> bico;
 
-    // Retrieve coreset
-    ProxySolution<Point> *sol = bico.compute();
-
-    std::ofstream outData(outputFilePath, std::ifstream::out);
-
-    // Output coreset size
-    outData << sol->proxysets[0].size() << "\n";
-
-    // Output coreset points
-    for (size_t i = 0; i < sol->proxysets[0].size(); ++i)
+public:
+    Experiment(size_t d, size_t n, size_t k, size_t p, size_t t, std::string inputFilePath, bool hasHeader, std::string outputFilePath) : D(d), N(n), K(k), P(p), T(t), InputFilePath(inputFilePath), HasHeader(hasHeader), OutputFilePath(outputFilePath), bico(d, n, k, p, t, new SquaredL2Metric(), new PointWeightModifier())
     {
-        // Output weight
-        outData << sol->proxysets[0][i].getWeight() << " ";
-        // Output center of gravity
-        for (size_t j = 0; j < sol->proxysets[0][i].dimension(); ++j)
-        {
-            outData << sol->proxysets[0][i][j];
-            if (j < sol->proxysets[0][i].dimension() - 1)
-                outData << " ";
-        }
-        outData << "\n";
     }
-    outData.close();
-}
 
-void runOnCensus1990()
-{
-    size_t d = 68;
-    size_t n = 2458285;
-    size_t k = 200;
-    size_t p = 50;
-    size_t T = 200 * k;
-    std::string inputFilePath = "data/raw/USCensus1990.data.txt";
-
-    printf("Initiasing BICO with d=%ld, n=%ld, k=%ld, p=%ld, T=%ld\n", d, n, k, p, T);
-    Bico<Point> bico(d, n, k, p, T, new SquaredL2Metric(), new PointWeightModifier());
-
-    printf("Opening input file %s...\n", inputFilePath.c_str());
-    std::ifstream inData(inputFilePath, std::ifstream::in);
-
-    std::string line;
-
-    // Skip the first line because it is the header.
-    std::getline(inData, line);
-
-    size_t pointCount = 0;
-
-    auto startTime = high_resolution_clock::now();
-    StopWatch sw(true);
-
-    while (inData.good())
+    void outputResultsToFile()
     {
-        // Read line and construct point
-        std::getline(inData, line);
+        printf("Write results to %s...\n", OutputFilePath.c_str());
+
+        // Retrieve coreset
+        ProxySolution<Point> *sol = bico.compute();
+
+        std::ofstream outData(OutputFilePath, std::ifstream::out);
+
+        // Output coreset size
+        outData << sol->proxysets[0].size() << "\n";
+
+        // Output coreset points
+        for (size_t i = 0; i < sol->proxysets[0].size(); ++i)
+        {
+            // Output weight
+            outData << sol->proxysets[0][i].getWeight() << " ";
+            // Output center of gravity
+            for (size_t j = 0; j < sol->proxysets[0][i].dimension(); ++j)
+            {
+                outData << sol->proxysets[0][i][j];
+                if (j < sol->proxysets[0][i].dimension() - 1)
+                    outData << " ";
+            }
+            outData << "\n";
+        }
+        outData.close();
+    }
+
+    virtual void parseLine(std::vector<double> &result, const std::string &line)
+    {
+        throw "ParseLine not implemented!";
+    }
+
+    void run()
+    {
+        printf("Opening input file %s...\n", InputFilePath.c_str());
+        std::ifstream inData(InputFilePath, std::ifstream::in);
+
+        std::string line;
+
+        if (HasHeader)
+        {
+            // Skip the first line because it is the header.
+            std::getline(inData, line);
+        }
+
+            size_t pointCount = 0;
+
+        StopWatch sw(true);
+
+        while (inData.good())
+        {
+            // Read line and construct point
+            std::getline(inData, line);
+            std::vector<double> coords;
+            parseLine(coords, line);
+            CluE::Point p(coords);
+
+            if (p.dimension() != D)
+            {
+                std::clog << "Line skipped because line dimension is " << p.dimension() << " instead of " << D << std::endl;
+                continue;
+            }
+
+            pointCount++;
+
+            if (pointCount % 10000 == 0)
+            {
+                std::cout << "Read " << pointCount << " points. Run time: " << sw.elapsedStr() << std::endl;
+            }
+
+            // Call BICO point update
+            bico << p;
+        }
+
+        std::cout << "Processed " << pointCount << " points. Run time: " << sw.elapsedStr() << "s" << std::endl;
+
+        outputResultsToFile();
+
+    }
+};
+
+class CensusExperiment : public Experiment
+{
+public:
+    CensusExperiment() : Experiment(
+        68UL,       // Number of dimensions
+        2458285UL,  // Number of points in the dataset.
+        200UL,      // Number of clusters.
+        50UL,       // Number of random projections
+        40000UL,    // Number of target points in the coreset.
+        "data/raw/USCensus1990.data.txt",
+        true,       // Whether the data contains a header.
+        "data/results/USCensus1990.data.txt"
+    )
+    {
+    }
+
+    void parseLine(std::vector<double> &result, const std::string &line)
+    {
         std::vector<std::string> stringcoords;
         boost::split(stringcoords, line, boost::is_any_of(","));
 
-        std::vector<double> coords;
-        coords.reserve(stringcoords.size());
+        result.reserve(stringcoords.size());
 
         // Skip the first attribute which is `caseid`
         for (size_t i = 1; i < stringcoords.size(); ++i)
-            coords.push_back(atof(stringcoords[i].c_str()));
-
-        CluE::Point p(coords);
-
-        // p.debug(pointCount, "%3.0f", 20);
-
-        if (p.dimension() != d)
-        {
-            std::clog << "Line skipped because line dimension is " << p.dimension() << " instead of " << d << std::endl;
-            continue;
-        }
-
-        pointCount++;
-
-        if (pointCount % 10000 == 0)
-        {
-            std::cout << "Read " << pointCount << " points. Run time: " << sw.elapsedStr() << std::endl;
-        }
-
-        // Call BICO point update
-        bico << p;
+            result.push_back(atof(stringcoords[i].c_str()));
     }
-
-    std::cout << "Processed " << pointCount << " points. Run time: " << sw.elapsedStr() << "s" << std::endl;
-
-    outputResultsToFile(bico, "data/results/USCensus1990.data.txt");
-}
+};
 
 int main(int argc, char **argv)
 {
-    using namespace CluE;
-
-    runOnCensus1990();
+    CensusExperiment census;
+    census.run();
 }
 
 int main_old(int argc, char **argv)
