@@ -133,12 +133,16 @@ public:
 
             // Call BICO point update
             bico << p;
+
+            // p.debug(pointCount, "%5.0f", 15);
+            // if (pointCount > 5) {
+            //     break;
+            // }
         }
 
         std::cout << "Processed " << pointCount << " points. Run time: " << sw.elapsedStr() << "s" << std::endl;
 
         outputResultsToFile();
-
     }
 };
 
