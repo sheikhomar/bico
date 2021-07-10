@@ -148,6 +148,20 @@ public:
         }
         printf("\n  ], dimensions = %ld\n", dimension());
 	}
+
+	void debugNonZero(size_t index, std::string valFormat="%7.3f", size_t elementsBeforeNewLine=10) const
+	{
+		printf("  p_%ld, dimensions = %ld\n", index, dimension());
+        for (size_t i = 0; i < dimension(); i++)
+        {
+			if (this->coordinates[i] == 0.0) 
+				continue;
+            
+			printf("  p[%5ld] = ", i);
+            printf(valFormat.c_str(), this->coordinates[i]);
+			printf("\n");
+        }
+	}
 	
 private:
 	std::vector<double> coordinates;
