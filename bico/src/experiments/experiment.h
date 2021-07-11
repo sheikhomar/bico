@@ -178,7 +178,7 @@ class CovertypeExperiment : public Experiment
 public:
     CovertypeExperiment()
     {
-        this->DimSize = 55UL;
+        this->DimSize = 54UL;
         this->DataSize = 581012UL;
         this->ClusterSize = 200UL;
         this->LowDimSize = 50UL;
@@ -202,7 +202,10 @@ public:
 
         result.reserve(stringcoords.size());
 
-        for (size_t i = 0; i < stringcoords.size(); ++i)
+        // Skip the last attribute because it is the label attribute
+        // StreamKM++ paper removed the classification attribute so 
+        // in total they have 54 attributes.
+        for (size_t i = 0; i < stringcoords.size() - 1; ++i)
             result.push_back(atof(stringcoords[i].c_str()));
     }
 };
