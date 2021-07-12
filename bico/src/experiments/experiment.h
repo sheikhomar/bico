@@ -303,4 +303,37 @@ public:
     }
 };
 
+class TowerExperiment : public Experiment
+{
+public:
+    TowerExperiment()
+    {
+        this->DimSize = 3UL;
+        this->DataSize = 4915200UL;
+        this->ClusterSize = 200UL;
+        this->LowDimSize = 3UL;
+        this->TargetCoresetSize = 40000UL;
+        this->InputFilePath = "data/raw/Tower.txt";
+        this->OutputFilePath = "data/results/Tower.txt";
+    }
+
+    void prepareFileStream(std::istream &inData)
+    {
+        printf("Preparing Tower.\n");
+    }
+
+    void parsePoint(std::vector<double> &result, std::istream &inData)
+    {
+        result.resize(this->DimSize);
+
+        std::string line;
+        for (size_t i = 0; i < this->DimSize; i++)
+        {
+            std::getline(inData, line);
+            result[i] = static_cast<double>(std::stol(line));
+        }
+    }
+};
+
+
 #endif

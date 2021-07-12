@@ -28,7 +28,7 @@ using namespace std::chrono;
 
 int main(int argc, char **argv)
 {
-    EnronExperiment experiment;
+    TowerExperiment experiment;
     experiment.run();
 }
 
