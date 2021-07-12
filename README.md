@@ -34,3 +34,9 @@ make -C bico/build
     curl https://archive.ics.uci.edu/ml/machine-learning-databases/bag-of-words/docword.enron.txt.gz \
         --output data/raw/docword.enron.txt.gz
     ```
+- Tower dataset
+
+    ```bash
+    curl http://homepages.uni-paderborn.de/frahling/instances/Tower.txt \
+        --output data/raw/Tower.txt
+    ```
