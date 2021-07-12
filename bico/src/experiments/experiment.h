@@ -276,7 +276,7 @@ public:
             boost::split(splits, line, boost::is_any_of(" "));
 
             auto docId = std::stoul(splits[0]);
-            auto wordId = std::stoul(splits[1]);
+            auto wordId = std::stoul(splits[1]) - 1; // Convert to zero-based array indexing
             auto count = static_cast<double>(std::stoul(splits[2]));
 
             if (firstPoint)
